@@ -49,4 +49,13 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/validate")
+    public ResponseEntity<Student> validateStudent(@PathVariable Long id) {
+        Student validated = studentService.validateStudent(id);
+        if (validated != null) {
+            return ResponseEntity.ok(validated);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

@@ -17,4 +17,5 @@ public class Student extends User {
     private String birthday;
     private String adress;
     private double score;
+    private boolean isValidated = false;
 }
