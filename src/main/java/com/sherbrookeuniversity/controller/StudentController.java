@@ -1,8 +1,10 @@
 package com.sherbrookeuniversity.controller;
 
 import com.sherbrookeuniversity.entity.Student;
+import com.sherbrookeuniversity.exception.EmailAlreadyExistsException;
 import com.sherbrookeuniversity.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +22,13 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        return ResponseEntity.ok(studentService.saveStudent(student));
+    public ResponseEntity<?> createStudent(@RequestBody Student student) {
+        try {
+            Student created = studentService.saveStudent(student);
+            return ResponseEntity.ok(created);
+        } catch (EmailAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @GetMapping
@@ -54,8 +61,21 @@ public class StudentController {
     public ResponseEntity<Student> validateStudent(@PathVariable Long id) {
         Student validated = studentService.validateStudent(id);
         if (validated != null) {
+            validated.setStatus(com.sherbrookeuniversity.entity.User.Status.ACTIVE);
+            studentService.saveStudent(validated);
             return ResponseEntity.ok(validated);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<Student> rejectStudent(@PathVariable Long id) {
+        return studentService.getStudentById(id)
+                .map(student -> {
+                    student.setStatus(com.sherbrookeuniversity.entity.User.Status.REJECTED);
+                    studentService.saveStudent(student);
+                    return ResponseEntity.ok(student);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

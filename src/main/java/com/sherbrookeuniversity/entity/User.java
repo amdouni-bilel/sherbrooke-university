@@ -21,4 +21,11 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public enum Status {
+        PENDING, ACTIVE, REJECTED
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.PENDING;
 }

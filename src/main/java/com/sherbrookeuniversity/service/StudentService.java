@@ -2,8 +2,11 @@ package com.sherbrookeuniversity.service;
 
 import com.sherbrookeuniversity.entity.Role;
 import com.sherbrookeuniversity.entity.Student;
+import com.sherbrookeuniversity.entity.User;
+import com.sherbrookeuniversity.exception.EmailAlreadyExistsException;
 import com.sherbrookeuniversity.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +18,19 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public Student saveStudent(Student student) {
         if (student.getId() == null) {
+            // Vérification d'unicité de l'email
+            if (studentRepository.existsByEmail(student.getEmail())) {
+                throw new EmailAlreadyExistsException("Email déjà utilisé");
+            }
             student.setValidated(false);
             student.setRole(Role.STUDENT);
+            student.setPassword(passwordEncoder.encode(student.getPassword()));
+            student.setStatus(User.Status.PENDING); // statut initial en attente
         }
         return studentRepository.save(student);
     }
