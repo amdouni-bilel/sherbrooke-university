@@ -21,20 +21,22 @@ public class TeacherService {
     private PasswordEncoder passwordEncoder;
 
     public Teacher saveTeacher(Teacher teacher) {
-        if (teacher.getId() == null) {
-            // Vérification d'unicité de l'email
-            if (teacherRepository.existsByEmail(teacher.getEmail())) {
-                throw new EmailAlreadyExistsException("Email déjà utilisé");
-            }
-            // Définir le rôle
-            teacher.setRole(Role.TEACHER);
-            // Hasher le mot de passe
-            teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
-            // Statut initial
-            teacher.setStatus(com.sherbrookeuniversity.entity.User.Status.ACTIVE);
-        }
+        // Définir le rôle par défaut
+        teacher.setRole(Role.TEACHER);
+
+        // Hasher le mot de passe si présent
+      //  if (teacher.getPassword() != null && !teacher.getPassword().isEmpty()) {
+     //       teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
+    //    }
+
+        // Statut par défaut
+        teacher.setStatus(com.sherbrookeuniversity.entity.User.Status.ACTIVE);
+
+        // Sauvegarde directe
         return teacherRepository.save(teacher);
     }
+
+
 
     public List<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
