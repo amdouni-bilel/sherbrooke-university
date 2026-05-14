@@ -43,7 +43,6 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-
                 .authorizeHttpRequests(auth -> auth
 
                         // ✅ CORS preflight
@@ -58,8 +57,11 @@ public class SecurityConfig {
                                 "/api-docs/**"
                         ).permitAll()
 
-                        // ✅ INSCRIPTION ÉTUDIANT (CORRECTION ICI ✅)
+                        // ✅ INSCRIPTION ÉTUDIANT
                         .requestMatchers(HttpMethod.POST, "/api/students/**").permitAll()
+
+                        // ✅ AJOUT PROFESSEUR
+                        .requestMatchers(HttpMethod.POST, "/api/teachers/**").permitAll()
 
                         // 🔐 le reste protégé
                         .anyRequest().authenticated()
@@ -67,4 +69,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-}*/
+
+}

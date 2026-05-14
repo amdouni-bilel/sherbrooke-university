@@ -1,5 +1,6 @@
 package com.sherbrookeuniversity.controller;
 
+import com.sherbrookeuniversity.entity.Role;
 import com.sherbrookeuniversity.entity.Teacher;
 import com.sherbrookeuniversity.exception.EmailAlreadyExistsException;
 import com.sherbrookeuniversity.service.TeacherService;
@@ -25,25 +26,16 @@ public class TeacherController {
     @PostMapping
     public ResponseEntity<?> createTeacher(@RequestBody Teacher teacher) {
         try {
-            // Validation des champs obligatoires
-            if (teacher.getFirstName() == null || teacher.getFirstName().isEmpty() ||
-                teacher.getLastName() == null || teacher.getLastName().isEmpty() ||
-                teacher.getEmail() == null || teacher.getEmail().isEmpty() ||
-                teacher.getPassword() == null || teacher.getPassword().isEmpty()) {
-                return ResponseEntity.badRequest()
-                    .body("Tous les champs obligatoires doivent être remplis");
-            }
-
             Teacher created = teacherService.saveTeacher(teacher);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (EmailAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("error", "Erreur lors de la création de l'enseignant"));
+                    .body(Map.of("error", "Erreur lors de la création de l'enseignant"));
         }
     }
+
+
+
 
     @GetMapping
     public ResponseEntity<List<Teacher>> getAllTeachers() {
