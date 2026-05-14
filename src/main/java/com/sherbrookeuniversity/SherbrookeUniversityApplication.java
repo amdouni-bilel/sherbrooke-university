@@ -8,7 +8,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class SherbrookeUniversityApplication {
@@ -18,17 +17,22 @@ public class SherbrookeUniversityApplication {
     }
 
     @Bean
-    public CommandLineRunner initAdmin(@Autowired UserRepository userRepository, @Autowired PasswordEncoder passwordEncoder) {
+    public CommandLineRunner initAdmin(@Autowired UserRepository userRepository) {
         return args -> {
             if (userRepository.findByEmail("youssef.kallel@gmail.com").isEmpty()) {
+
                 Admin admin = new Admin();
                 admin.setFirstName("Youssef");
                 admin.setLastName("Kallel");
                 admin.setEmail("youssef.kallel@gmail.com");
-                admin.setPassword(passwordEncoder.encode("12345"));
+
+                // ✅ PAS DE HASH, PAS DE SÉCURITÉ
+                admin.setPassword("12345");
+
                 admin.setRole(Role.ADMIN);
                 userRepository.save(admin);
-                System.out.println("Admin account created: youssef.kallel@gmail.com");
+
+                System.out.println("✅ Admin account created: youssef.kallel@gmail.com");
             }
         };
     }

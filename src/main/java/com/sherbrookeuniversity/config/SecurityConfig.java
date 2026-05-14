@@ -1,3 +1,4 @@
+/*
 package com.sherbrookeuniversity.config;
 
 import java.util.List;
@@ -66,4 +67,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-}
+}*/

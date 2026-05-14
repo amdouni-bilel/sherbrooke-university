@@ -5,7 +5,6 @@ import com.sherbrookeuniversity.entity.Teacher;
 import com.sherbrookeuniversity.exception.EmailAlreadyExistsException;
 import com.sherbrookeuniversity.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,22 +16,24 @@ public class TeacherService {
     @Autowired
     private TeacherRepository teacherRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     public Teacher saveTeacher(Teacher teacher) {
         if (teacher.getId() == null) {
-            // Vérification d'unicité de l'email
+
+            // ✅ Vérification d'unicité de l'email
             if (teacherRepository.existsByEmail(teacher.getEmail())) {
                 throw new EmailAlreadyExistsException("Email déjà utilisé");
             }
-            // Définir le rôle
+
+            // ✅ Rôle
             teacher.setRole(Role.TEACHER);
-            // Hasher le mot de passe
-            teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
-            // Statut initial
+
+            // ✅ PAS DE HASH, PAS DE SÉCURITÉ
+            teacher.setPassword(teacher.getPassword());
+
+            // ✅ Statut initial
             teacher.setStatus(com.sherbrookeuniversity.entity.User.Status.ACTIVE);
         }
+
         return teacherRepository.save(teacher);
     }
 
