@@ -1,8 +1,6 @@
 package com.sherbrookeuniversity.controller;
 
-import com.sherbrookeuniversity.entity.Role;
 import com.sherbrookeuniversity.entity.Teacher;
-import com.sherbrookeuniversity.exception.EmailAlreadyExistsException;
 import com.sherbrookeuniversity.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,9 +31,6 @@ public class TeacherController {
                     .body(Map.of("error", "Erreur lors de la création de l'enseignant"));
         }
     }
-
-
-
 
     @GetMapping
     public ResponseEntity<List<Teacher>> getAllTeachers() {
