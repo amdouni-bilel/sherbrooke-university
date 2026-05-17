@@ -28,6 +28,11 @@ public class TeacherService {
         // Statut par défaut
         teacher.setStatus(com.sherbrookeuniversity.entity.User.Status.ACTIVE);
 
+        // Vérifier l'email avant sauvegarde
+        if (teacher.getEmail() != null && teacherRepository.existsByEmail(teacher.getEmail())) {
+            throw new EmailAlreadyExistsException("Email already exists: " + teacher.getEmail());
+        }
+
         // Sauvegarde directe
         return teacherRepository.save(teacher);
     }
